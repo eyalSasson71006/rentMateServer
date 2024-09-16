@@ -1,10 +1,10 @@
 const express = require("express");
-// const cardsRouterController = require("../cards/routes/apartmentsRestController");
+const apartmentsRouterController = require("../apartments/routes/apartmentRestController.js");
 // const usersRouterController = require("../users/routes/usersRestController");
 
 const router = express.Router();
 
-// router.use("/apartments", cardsRouterController);
+router.use("/apartments", apartmentsRouterController);
 // router.use("/users", usersRouterController);
 
 router.use((req, res) => {

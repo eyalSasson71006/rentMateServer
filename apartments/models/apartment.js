@@ -37,7 +37,11 @@ const apartmentSchema = new mongoose.Schema({
     likes: [String],
     rating: Number,
     favorite: Boolean,
-    available: Boolean,
+    available: {
+        type: Boolean,
+        required: true,
+        default: true
+    },
     createdAt: {
         type: Date,
         default: Date.now()

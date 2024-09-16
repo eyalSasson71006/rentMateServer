@@ -1,10 +1,11 @@
 const mongoose = require("mongoose");
 const { DEFAULT_VALIDATION } = require("./mongooseValidators");
+const Image = require("./Image");
 
 const Review = new mongoose.Schema({
     id: mongoose.Schema.Types.ObjectId,
     username: DEFAULT_VALIDATION,
-    img: Image,
+    image: Image,
     text: {
         ...DEFAULT_VALIDATION,
         maxLength: 1024
