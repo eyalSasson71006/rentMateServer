@@ -15,6 +15,12 @@ const userSchema = new mongoose.Schema({
     phone: PHONE,
     image: Image,
     address: Address,
+    rating: {
+        type: Number,
+        min: 0,
+        max: 5,
+        default:0
+    },
     isAdmin: {
         type: Boolean,
         default: false
