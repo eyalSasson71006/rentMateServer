@@ -1,3 +1,4 @@
+const { createError } = require("../../utils/handleErrors");
 const Apartment = require("./apartment");
 
 const createApartment = async (newApartment) => {
@@ -6,7 +7,7 @@ const createApartment = async (newApartment) => {
         apartment = await apartment.save();
         return apartment;
     } catch (error) {
-        throw new Error("Mongoose " + error.message);
+        createError("Mongoose ", error);
     }
 };
 
@@ -15,17 +16,17 @@ const getApartments = async () => {
         let apartments = await Apartment.find();
         return apartments;
     } catch (error) {
-        throw new Error("Mongoose " + error.message);
+        createError("Mongoose ", error);
     }
 };
 
-const getRecommendedApartments = async () => {
+const getApartmentById = async (id) => {
     try {
-        let apartments = await Apartment.find().sort({rating:1});
-        return apartments;
+        let apartment = await Apartment.findById(id);
+        return apartment;
     } catch (error) {
-        throw new Error("Mongoose " + error.message);
+        createError("Mongoose ", error);
     }
 };
 
-module.exports = { createApartment, getApartments, getRecommendedApartments };
+module.exports = { createApartment, getApartments, getApartmentById };

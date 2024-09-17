@@ -26,10 +26,6 @@ router.get("/", auth, async (req, res) => {
 router.get("/:id", auth, async (req, res) => {
     try {
         const { id } = req.params;
-        const userInfo = req.user;
-        if (userInfo._id != id && !userInfo.isAdmin) {
-            return handleError(res, 403, "Authorization Error: Only an admin or the user itself can get its details");
-        }
         const user = await getUserById(id);
         res.send(user);
     } catch (error) {
