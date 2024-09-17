@@ -7,10 +7,18 @@ const Address = require("../../helpers/mongodb/Address");
 const userSchema = new mongoose.Schema({
     name: Name,
     email: EMAIL,
+    password: {
+        type: String,
+        required: true,
+        trim: true
+    },
     phone: PHONE,
     image: Image,
     address: Address,
-    isAdmin: false,
+    isAdmin: {
+        type: Boolean,
+        default: false
+    },
     createdAt: {
         type: Date,
         default: Date.now()
