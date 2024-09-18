@@ -29,4 +29,13 @@ const getApartmentById = async (id) => {
     }
 };
 
-module.exports = { createApartment, getApartments, getApartmentById };
+const getUsersApartments = async (userId) => {
+    try {
+        let apartments = await Apartment.find({ 'owner.ownerId': userId });
+        return apartments;
+    } catch (error) {
+        createError("Mongoose ", error);
+    }
+};
+
+module.exports = { createApartment, getApartments, getApartmentById, getUsersApartments };

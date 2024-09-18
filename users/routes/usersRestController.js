@@ -3,6 +3,7 @@ const { registerUser, getUsers, getUserById, loginUser } = require("../models/us
 const auth = require("../../auth/authService");
 const { handleError } = require("../../utils/handleErrors");
 const normalizeUser = require("../helpers/normalizeUser");
+const { getUsersApartments } = require("../../apartments/models/apartmentAccessDataService");
 
 const router = express.Router();
 
@@ -19,6 +20,16 @@ router.get("/", auth, async (req, res) => {
         // }
         const users = await getUsers();
         res.send(users);
+    } catch (error) {
+        handleError(res, error.status || 400, error.message);
+    }
+});
+
+router.get("/users-apartments/:id", auth, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const apartments = await getUsersApartments(id);
+        res.send(apartments);
     } catch (error) {
         handleError(res, error.status || 400, error.message);
     }
