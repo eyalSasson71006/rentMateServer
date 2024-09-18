@@ -2,7 +2,7 @@ const { getUserById } = require("../../users/models/usersAccessDataService");
 
 const normalizeApartment = async (apartment, userId) => {
     const user = await getUserById(userId);
-
+        
     return ({
         ...apartment,
         image: {
@@ -12,7 +12,10 @@ const normalizeApartment = async (apartment, userId) => {
         owner: {
             ownerId: userId._id || userId,
             fullName: user.name.first + " " + user.name.last,
-            image: user.image || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
+            image: {
+                src: user.image.src || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
+                alt: user.image.alt || "Profile Picture"
+            } ,
             rating: user.rating
         },
     });

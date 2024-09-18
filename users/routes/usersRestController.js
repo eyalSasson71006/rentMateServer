@@ -2,6 +2,7 @@ const express = require("express");
 const { registerUser, getUsers, getUserById, loginUser } = require("../models/usersAccessDataService");
 const auth = require("../../auth/authService");
 const { handleError } = require("../../utils/handleErrors");
+const normalizeUser = require("../helpers/normalizeUser");
 
 const router = express.Router();
 
@@ -35,7 +36,8 @@ router.get("/:id", auth, async (req, res) => {
 
 router.post("/", async (req, res) => {
     try {
-        const user = await registerUser(req.body);
+        let user = normalizeUser(req.body)
+        user = await registerUser(user);
         res.status(201).send(user);
     } catch (error) {
         handleError(res, error.status || 400, error.message);
