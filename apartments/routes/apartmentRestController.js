@@ -1,5 +1,5 @@
 const express = require("express");
-const { createApartment, getApartments, getApartmentById, updateApartment, likeApartment, deleteApartment } = require("../models/apartmentAccessDataService");
+const { createApartment, getApartments, getApartmentById, updateApartment, likeApartment, deleteApartment, reviewApartment } = require("../models/apartmentAccessDataService");
 const { handleError } = require("../../utils/handleErrors");
 const auth = require("../../auth/authService");
 const normalizeApartment = require("../helpers/normalizeApartment");
@@ -25,6 +25,17 @@ router.get("/", async (req, res) => {
         res.send(apartments);
     } catch (error) {
         handleError(res, 400, error.message);
+    }
+});
+
+router.patch("/review/:id", auth, async (req, res) => {
+    try {
+        const newReview = req.body;
+        const { id } = req.params;
+        let apartment = await reviewApartment(id, newReview);
+        res.send(apartment.reviews);
+    } catch (error) {
+        handleError(res, error.status || 400, error.message);
     }
 });
 

@@ -66,13 +66,28 @@ const likeApartment = async (apartmentId, userId) => {
     }
 };
 
-const deleteApartment = async (apartmentId) => {
+const reviewApartment = async (apartmentId, reviewObj) => {
     try {
-        let apartment = await Apartment.findByIdAndDelete(apartmentId);
+        let apartment = await Apartment.findById(apartmentId);
+        if (!apartment) {
+            const error = new Error("an apartment with this ID cannot be not found in the database");
+            return createError("Mongoose", error, 404);
+        }
+        apartment.reviews.push(reviewObj);
+        await apartment.save();
         return apartment;
     } catch (error) {
         createError("Mongoose ", error);
     }
 };
 
-module.exports = { createApartment, getApartments, getApartmentById, getUsersApartments, updateApartment, likeApartment, deleteApartment };
+const deleteApartment = async (apartmentId) => {
+    try {
+        let apartment = await Apartment.findByIdAndDelete(apartmentId);
+        return apartment.reviews;
+    } catch (error) {
+        createError("Mongoose ", error);
+    }
+};
+
+module.exports = { createApartment, getApartments, getApartmentById, getUsersApartments, updateApartment, likeApartment, reviewApartment, deleteApartment };

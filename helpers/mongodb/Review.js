@@ -3,7 +3,7 @@ const { DEFAULT_VALIDATION } = require("./mongooseValidators");
 const Image = require("./Image");
 
 const Review = new mongoose.Schema({
-    id: mongoose.Schema.Types.ObjectId,
+    reviewId: mongoose.Schema.Types.ObjectId,
     username: DEFAULT_VALIDATION,
     image: Image,
     text: {
