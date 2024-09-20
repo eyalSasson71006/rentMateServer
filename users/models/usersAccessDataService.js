@@ -48,4 +48,13 @@ const getUsers = async () => {
     }
 };
 
-module.exports = { registerUser, getUsers, getUserById, loginUser };
+const updateUser = async (userId, updatedUser) => {
+    try {
+        let user = await User.findByIdAndUpdate(userId, updatedUser, { new: true });
+        return user;
+    } catch (error) {
+        createError("Mongoose ", error);
+    }
+};
+
+module.exports = { registerUser, getUsers, getUserById, loginUser, updateUser };
