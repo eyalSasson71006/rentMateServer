@@ -55,7 +55,7 @@ router.put("/:id", auth, async (req, res) => {
         const { id } = req.params;
         const newApartment = req.body;
         const fullApartmentFromDb = await getApartmentById(id);
-        if (userInfo._id != fullApartmentFromDb.owner.ownerId && !userInfo.isAdmin) {
+        if (userInfo._id != fullApartmentFromDb.owner && !userInfo.isAdmin) {
             return handleError(res, 403, "Authorization Error: Only the user who created the apartment or admin can update its details");
         }
         let apartment = await normalizeApartment(newApartment, userInfo._id);
@@ -82,7 +82,7 @@ router.delete("/:id", auth, async (req, res) => {
         const { id } = req.params;
         const userInfo = req.user;
         const fullApartmentFromDb = await getApartmentById(id);
-        if (userInfo._id != fullApartmentFromDb.owner.ownerId && !userInfo.isAdmin) {
+        if (userInfo._id != fullApartmentFromDb.owner && !userInfo.isAdmin) {
             return handleError(res, 403, "Authorization Error: Only the user who created the apartment or admin can delete it");
         }
         let apartment = await deleteApartment(id);

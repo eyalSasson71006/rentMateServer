@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const { PHONE, DEFAULT_VALIDATION, EMAIL, URL } = require("../../helpers/mongodb/mongooseValidators");
 const Amenities = require("../../helpers/mongodb/Amenities");
-const Owner = require("../../helpers/mongodb/Owner");
 const Review = require("../../helpers/mongodb/Review");
 const Address = require("../../helpers/mongodb/Address");
 const Image = require("../../helpers/mongodb/Image");
@@ -32,7 +31,7 @@ const apartmentSchema = new mongoose.Schema({
     },
     image: Image,
     amenities: Amenities,
-    owner: Owner,
+    owner: mongoose.Schema.Types.ObjectId,
     reviews: [Review],
     likes: [String],
     rating: {

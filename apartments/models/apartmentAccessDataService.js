@@ -31,7 +31,7 @@ const getApartmentById = async (id) => {
 
 const getUsersApartments = async (userId) => {
     try {
-        let apartments = await Apartment.find({ 'owner.ownerId': userId });
+        let apartments = await Apartment.find({ owner: userId });
         return apartments;
     } catch (error) {
         createError("Mongoose ", error);

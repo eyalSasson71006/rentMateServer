@@ -39,9 +39,11 @@ router.get("/users-reviews/:id", auth, async (req, res) => {
     try {
         const { id } = req.params;
         let apartments = await getUsersApartments(id);
-        const { reviews, rating } = calculateRating(apartments);
-        await updateUser(id, { rating: rating });
-        res.send(reviews);
+        if (apartments.length > 0) {
+            const { reviews, rating } = calculateRating(apartments);
+            await updateUser(id, { rating: rating });
+            res.send(reviews);
+        }
     } catch (error) {
         handleError(res, error.status || 400, error.message);
     }
