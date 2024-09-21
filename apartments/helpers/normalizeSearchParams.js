@@ -37,6 +37,7 @@ const normalizeSearchParams = (params) => {
     const maxPrice = !isNaN(Number(params.maxPrice)) ? Number(params.maxPrice) : null;
     const bedrooms = !isNaN(Number(params.bedrooms)) ? Number(params.bedrooms) : null;
     const bathrooms = !isNaN(Number(params.bathrooms)) ? Number(params.bathrooms) : null;
+    const guests = !isNaN(Number(params.guests)) ? Number(params.guests) : null;
 
     let query = {
         ...amenities,
@@ -55,6 +56,7 @@ const normalizeSearchParams = (params) => {
     }
     if (bedrooms) query.bedrooms = bedrooms;
     if (bathrooms) query.bathrooms = bathrooms;
+    if (guests) query.guests = guests;
     if (params.propertyType) query.propertyType = params.propertyType;
 
     return query;

@@ -14,6 +14,11 @@ const apartmentSchema = new mongoose.Schema({
         min: 0,
         required: true
     },
+    guests: {
+        type: Number,
+        min: 1,
+        required: true
+    },
     bedrooms: {
         type: Number,
         min: 1,
