@@ -4,6 +4,7 @@ const { handleError } = require("../../utils/handleErrors");
 const auth = require("../../auth/authService");
 const normalizeApartment = require("../helpers/normalizeApartment");
 const normalizeSearchParams = require("../helpers/normalizeSearchParams");
+const calculateRating = require("../../users/helpers/calculateRating");
 
 
 const router = express.Router();
@@ -22,10 +23,24 @@ router.post("/", auth, async (req, res) => {
 
 router.get("/", async (req, res) => {
     try {
-        let params = req.query || {};        
+        let params = req.query || {};
         params = normalizeSearchParams(params);
         let apartments = await getApartments(params);
         res.send(apartments);
+    } catch (error) {
+        handleError(res, 400, error.message);
+    }
+});
+
+router.get("/apartment-reviews/:id", auth, async (req, res) => {
+    try {
+        const { id } = req.params;
+        let apartment = await getApartmentById(id);
+        if (apartment?.reviews.length > 0) {
+            const { reviews, rating } = calculateRating([apartment]);
+            await updateApartment(id, { rating: rating });
+            res.send(reviews);
+        }
     } catch (error) {
         handleError(res, 400, error.message);
     }
