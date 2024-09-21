@@ -11,9 +11,11 @@ const createApartment = async (newApartment) => {
     }
 };
 
-const getApartments = async () => {
+const getApartments = async (params={}) => {
     try {
-        let apartments = await Apartment.find();
+        console.log(params);
+        
+        let apartments = await Apartment.find(params);
         return apartments;
     } catch (error) {
         createError("Mongoose ", error);
