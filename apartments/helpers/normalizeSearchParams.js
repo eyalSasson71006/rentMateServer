@@ -29,7 +29,8 @@ const normalizeSearchParams = (params) => {
 
     let amenities = {};
     for (let key in params) {
-        if (amenitiesList.includes(key) && params[key]) {
+        
+        if (amenitiesList.includes(key) && params[key]=="true") {
             amenities[`amenities.${key}`] = Boolean(params[key]);
         }
     }
@@ -59,6 +60,7 @@ const normalizeSearchParams = (params) => {
     if (guests) query.guests = guests;
     if (params.propertyType) query.propertyType = params.propertyType;
 
+    console.log(query);
     return query;
 };
 
