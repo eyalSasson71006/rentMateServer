@@ -5,7 +5,7 @@ const { handleError } = require("../../utils/handleErrors");
 const normalizeUser = require("../helpers/normalizeUser");
 const { getUsersApartments } = require("../../apartments/models/apartmentAccessDataService");
 const calculateRating = require("../helpers/calculateRating");
-const { validateRegistration, validateLogin } = require("../validation/userValidationService");
+const { validateRegistration, validateLogin, validateEditUser } = require("../validation/userValidationService");
 
 const router = express.Router();
 
@@ -55,6 +55,25 @@ router.get("/:id", auth, async (req, res) => {
         const { id } = req.params;
         const user = await getUserById(id);
         res.send(user);
+    } catch (error) {
+        handleError(res, error.status || 400, error.message);
+    }
+});
+
+router.put("/:id", auth, async (req, res) => {
+    try {
+        const error = validateEditUser(req.body);
+        if (error) return handleError(res, 400, `Joi Error: ${error}`);
+
+        const { id } = req.params;
+        const userInfo = req.user;
+        let user = req.body;
+
+        if (userInfo._id != id && !userInfo.isAdmin) {
+            return handleError(res, 403, "Authorization Error: Only a user or admin can update its details");
+        }
+        user = await updateUser(id, user);
+        res.status(201).send(user);
     } catch (error) {
         handleError(res, error.status || 400, error.message);
     }
