@@ -1,5 +1,7 @@
 const jwt = require("jsonwebtoken");
-const SECRET_WORD = "gookgoo";
+require("dotenv").config();
+
+const SECRET_WORD = process.env.JWT_SECRET;
 
 const generateAuthToken = (user) => {
     return jwt.sign({

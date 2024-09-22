@@ -1,7 +1,8 @@
 const connectToLocalDb = require("./mongodb/connectToMongodbLocally");
 const connectToAtlasDb = require("./mongodb/connectToAtlas");
+const config = require("config");
 
-const ENVIRONMENT = "development";
+const ENVIRONMENT = config.get("ENVIRONMENT");
 
 const connectToDb = async () => {
     if (ENVIRONMENT === "development") {
