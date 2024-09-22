@@ -5,6 +5,7 @@ const { handleError } = require("../../utils/handleErrors");
 const normalizeUser = require("../helpers/normalizeUser");
 const { getUsersApartments } = require("../../apartments/models/apartmentAccessDataService");
 const calculateRating = require("../helpers/calculateRating");
+const { validateRegistration, validateLogin } = require("../validation/userValidationService");
 
 const router = express.Router();
 
@@ -61,6 +62,9 @@ router.get("/:id", auth, async (req, res) => {
 
 router.post("/", async (req, res) => {
     try {
+        const error = validateRegistration(req.body);
+        if (error) return handleError(res, 400, `Joi Error: ${error}`);
+
         let user = normalizeUser(req.body);
         user = await registerUser(user);
         res.status(201).send(user);
@@ -71,6 +75,9 @@ router.post("/", async (req, res) => {
 
 router.post("/login", async (req, res) => {
     try {
+        const error = validateLogin(req.body);
+        if (error) return handleError(res, 400, `Joi Error: ${error}`);
+
         let { email, password } = req.body;
         const token = await loginUser(email, password);
         res.send(token);

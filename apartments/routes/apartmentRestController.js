@@ -5,12 +5,16 @@ const auth = require("../../auth/authService");
 const normalizeApartment = require("../helpers/normalizeApartment");
 const normalizeSearchParams = require("../helpers/normalizeSearchParams");
 const calculateRating = require("../../users/helpers/calculateRating");
+const validateApartment = require("../validation/apartmentValidationService");
 
 
 const router = express.Router();
 
 router.post("/", auth, async (req, res) => {
     try {
+        const error = validateApartment(req.body);
+        if (error) handleError(res, 400, "Validation error: " + error);
+
         const userInfo = req.user;
         let apartment = await normalizeApartment(req.body, userInfo._id);
         apartment = await createApartment(apartment);
