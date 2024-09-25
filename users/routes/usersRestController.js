@@ -27,7 +27,7 @@ router.get("/", auth, async (req, res) => {
     }
 });
 
-router.get("/users-apartments/:id", auth, async (req, res) => {
+router.get("/users-apartments/:id", async (req, res) => {
     try {
         const { id } = req.params;
         const apartments = await getUsersApartments(id);
@@ -36,7 +36,7 @@ router.get("/users-apartments/:id", auth, async (req, res) => {
         handleError(res, error.status || 400, error.message);
     }
 });
-router.get("/users-reviews/:id", auth, async (req, res) => {
+router.get("/users-reviews/:id", async (req, res) => {
     try {
         const { id } = req.params;
         let apartments = await getUsersApartments(id);
@@ -50,7 +50,7 @@ router.get("/users-reviews/:id", auth, async (req, res) => {
     }
 });
 
-router.get("/:id", auth, async (req, res) => {
+router.get("/:id", async (req, res) => {
     try {
         const { id } = req.params;
         const user = await getUserById(id);

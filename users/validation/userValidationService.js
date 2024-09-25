@@ -1,5 +1,5 @@
 const registerValidation = require("./joi/registerValidation");
-const loginValidation = require("./Joi/loginValidation");
+const loginValidation = require("./joi/loginValidation");
 const editUserValidation = require("./joi/editUserValidation");
 
 const config = require("config");

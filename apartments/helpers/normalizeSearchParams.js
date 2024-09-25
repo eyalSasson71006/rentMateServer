@@ -59,8 +59,6 @@ const normalizeSearchParams = (params) => {
     if (bathrooms) query.bathrooms = bathrooms;
     if (guests) query.guests = guests;
     if (params.propertyType) query.propertyType = params.propertyType;
-
-    console.log(query);
     return query;
 };
 

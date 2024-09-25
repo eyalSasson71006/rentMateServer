@@ -36,7 +36,7 @@ router.get("/", async (req, res) => {
     }
 });
 
-router.get("/apartment-reviews/:id", auth, async (req, res) => {
+router.get("/apartment-reviews/:id", async (req, res) => {
     try {
         const { id } = req.params;
         let apartment = await getApartmentById(id);
