@@ -18,12 +18,10 @@ const createApartment = async (newApartment) => {
     return createError("DB", error, 500);
 };
 
-const getApartments = async (params = {}) => {
+const getApartments = async () => {
     if (DB === "mongodb") {
         try {
-            console.log(params);
-
-            let apartments = await Apartment.find(params);
+            let apartments = await Apartment.find();
             return apartments;
         } catch (error) {
             createError("Mongoose ", error);
@@ -127,4 +125,23 @@ const deleteApartment = async (apartmentId) => {
     return createError("DB", error, 500);
 };
 
-module.exports = { createApartment, getApartments, getApartmentById, getUsersApartments, updateApartment, likeApartment, reviewApartment, deleteApartment };
+const toggleAvailability = async (apartmentId) => {
+    if (DB === "mongodb") {
+        try {
+            let apartment = await Apartment.findById(apartmentId);
+            if (!apartment) {
+                const error = new Error("an apartment with this ID cannot be not found in the database");
+                return createError("Mongoose", error, 404);
+            }
+            apartment.available = !apartment.available;
+            await apartment.save();
+            return apartment.available;
+        } catch (error) {
+            createError("Mongoose ", error);
+        }
+    }
+    const error = new Error("There is no other db for this requests");
+    return createError("DB", error, 500);
+};
+
+module.exports = { createApartment, getApartments, getApartmentById, getUsersApartments, updateApartment, likeApartment, reviewApartment, deleteApartment, toggleAvailability };
