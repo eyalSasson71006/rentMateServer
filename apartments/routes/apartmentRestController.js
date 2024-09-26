@@ -30,7 +30,7 @@ router.get("/", async (req, res) => {
     try {
         let params = req.query || {};
         params = normalizeSearchParams(params);
-        let apartments = await getApartments();
+        let apartments = await getApartments(params);
         res.send(apartments);
     } catch (error) {
         handleError(res, 400, error.message);

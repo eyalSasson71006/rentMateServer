@@ -18,10 +18,10 @@ const createApartment = async (newApartment) => {
     return createError("DB", error, 500);
 };
 
-const getApartments = async () => {
+const getApartments = async (params={}) => {
     if (DB === "mongodb") {
         try {
-            let apartments = await Apartment.find();
+            let apartments = await Apartment.find(params);
             return apartments;
         } catch (error) {
             createError("Mongoose ", error);
