@@ -1,11 +1,12 @@
 const express = require("express");
-const { createApartment, getApartments, getApartmentById, updateApartment, likeApartment, deleteApartment, reviewApartment, toggleAvailability } = require("../models/apartmentAccessDataService");
+const { createApartment, getApartments, getApartmentById, updateApartment, likeApartment, deleteApartment, reviewApartment, toggleAvailability, getUsersApartments } = require("../models/apartmentAccessDataService");
 const { handleError } = require("../../utils/handleErrors");
 const auth = require("../../auth/authService");
 const normalizeApartment = require("../helpers/normalizeApartment");
 const normalizeSearchParams = require("../helpers/normalizeSearchParams");
 const calculateRating = require("../../users/helpers/calculateRating");
 const validateApartment = require("../validation/apartmentValidationService");
+const { updateUser } = require("../../users/models/usersAccessDataService");
 
 
 const router = express.Router();
@@ -55,6 +56,13 @@ router.patch("/review/:id", auth, async (req, res) => {
         const newReview = req.body;
         const { id } = req.params;
         let apartment = await reviewApartment(id, newReview);
+        if (apartment?.reviews.length > 0) {
+            const { rating } = calculateRating([apartment]);
+            await updateApartment(id, { rating: rating });
+        }
+        let apartments = await getUsersApartments(apartment.owner);
+        const { rating } = calculateRating(apartments);
+        await updateUser(apartment.owner, { rating: rating });
         res.send(apartment.reviews);
     } catch (error) {
         handleError(res, error.status || 400, error.message);
