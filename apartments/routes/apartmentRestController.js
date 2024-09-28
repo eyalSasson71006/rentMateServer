@@ -13,10 +13,13 @@ const router = express.Router();
 
 router.post("/", auth, async (req, res) => {
     try {
+        const userInfo = req.user;
+        if (!userInfo.isOwner) {
+            return handleError(res, 403, "Only Owner users can list a new Apartment");
+        }
         const error = validateApartment(req.body);
         if (error) handleError(res, 400, "Validation error: " + error);
 
-        const userInfo = req.user;
         let apartment = await normalizeApartment(req.body, userInfo._id);
         apartment = await createApartment(apartment);
         res.status(201).send(apartment);

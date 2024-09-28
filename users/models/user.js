@@ -20,6 +20,10 @@ const userSchema = new mongoose.Schema({
         max: 5,
         default:0
     },
+    isOwner: {
+        type: Boolean,
+        default: false
+    },
     isAdmin: {
         type: Boolean,
         default: false

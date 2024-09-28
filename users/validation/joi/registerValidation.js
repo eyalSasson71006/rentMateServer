@@ -50,6 +50,7 @@ const registerValidation = (user) => {
                 zip: Joi.number().min(0),
             })
             .required(),
+        isOwner: Joi.boolean().required(),
         isAdmin: Joi.boolean().allow(""),
     });
     return schema.validate(user);
