@@ -63,8 +63,9 @@ router.get("/:id", async (req, res) => {
 router.put("/:id", auth, async (req, res) => {
     try {
         const error = validateEditUser(req.body);
-        if (error) return handleError(res, 400, `Joi Error: ${error}`);
-
+        if (error) {
+            return handleError(res, 400, `Joi Error: ${error}`);
+        };
         const { id } = req.params;
         const userInfo = req.user;
         let user = req.body;
@@ -82,8 +83,9 @@ router.put("/:id", auth, async (req, res) => {
 router.post("/", async (req, res) => {
     try {
         const error = validateRegistration(req.body);
-        if (error) return handleError(res, 400, `Joi Error: ${error}`);
-
+        if (error) {
+            return handleError(res, 400, `Joi Error: ${error}`);
+        };
         let user = normalizeUser(req.body);
         user = await registerUser(user);
         res.status(201).send(user);
@@ -95,8 +97,9 @@ router.post("/", async (req, res) => {
 router.post("/login", async (req, res) => {
     try {
         const error = validateLogin(req.body);
-        if (error) return handleError(res, 400, `Joi Error: ${error}`);
-
+        if (error) {
+            return handleError(res, 400, `Joi Error: ${error}`);
+        };
         let { email, password } = req.body;
         const token = await loginUser(email, password);
         res.send(token);

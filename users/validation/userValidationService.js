@@ -9,23 +9,20 @@ const VALIDATOR = config.get("VALIDATOR");
 const validateRegistration = (user) => {
     if (VALIDATOR === "joi") {
         const { error } = registerValidation(user);
-        if (error) return error.details[0].message;
-        return "";
+        return error ? error.details[0].message : null;
     }
 };
 
 const validateEditUser = (user) => {
     if (VALIDATOR === "joi") {
         const { error } = editUserValidation(user);
-        if (error) return error.details[0].message;
-        return "";
+        return error ? error.details[0].message : null;
     }
 };
 const validateLogin = (user) => {
     if (VALIDATOR === "joi") {
         const { error } = loginValidation(user);
-        if (error) return error.details[0].message;
-        return "";
+        return error ? error.details[0].message : null;
     }
 };
 exports.validateRegistration = validateRegistration;

@@ -8,7 +8,9 @@ const createError = (validator, errorObj, status = null) => {
 
 const handleError = (res, status, message="")=>{
     console.log(chalk.redBright(message));
-    return res.status(status).send(message);
+    if (!res.headersSent) {
+        return res.status(status).send(message);
+    }
 }
 
 module.exports = {createError, handleError}

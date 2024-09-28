@@ -7,8 +7,7 @@ const VALIDATOR = config.get("VALIDATOR");
 const validateApartment = (apartment) => {
     if (VALIDATOR === "joi") {
         const { error } = validateApartmentWithJoi(apartment);
-        if (error) return error.details[0].message;
-        return "";
+        return error ? error.details[0].message : null;
     }
 };
 

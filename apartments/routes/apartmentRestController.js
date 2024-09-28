@@ -18,8 +18,9 @@ router.post("/", auth, async (req, res) => {
             return handleError(res, 403, "Only Owner users can list a new Apartment");
         }
         const error = validateApartment(req.body);
-        if (error) handleError(res, 400, "Validation error: " + error);
-
+        if (error) {
+            return handleError(res, 400, "Validation error: " + error)
+        };
         let apartment = await normalizeApartment(req.body, userInfo._id);
         apartment = await createApartment(apartment);
         res.status(201).send(apartment);
