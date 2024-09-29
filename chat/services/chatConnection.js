@@ -1,5 +1,4 @@
 const Chat = require("../models/Chat");
-const socketIo = require('socket.io');
 
 const socketConnection = (socket) => {
     console.log(`User connected: ${socket.user._id}`);

@@ -4,4 +4,12 @@ const corsMiddleware = cors({
     origin: ["http://localhost:5173"],
     })
 
-module.exports = corsMiddleware;
+const socketCorsMiddleware = {
+    cors: {
+        origin: 'http://localhost:5173',
+        methods: ['GET', 'POST'],
+        credentials: true,
+    },
+};
+
+module.exports = { corsMiddleware, socketCorsMiddleware };
