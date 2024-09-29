@@ -5,6 +5,10 @@ const router = require("./router/router");
 const corsMiddleware = require("./middlewares/cors");
 const chalk = require("chalk");
 const loggerMiddleware = require("./logger/loggerService");
+const ioAuth = require("./auth/socketAuthService");
+const Chat = require("./chat/models/Chat");
+const socketConnection = require("./chat/controllers/chatController");
+const socketIo = require('socket.io');
 
 const app = express();
 const PORT = 8181;
@@ -22,7 +26,13 @@ app.use((err, req, res, next) => {  //error handling
     handleError(res, 500, "internal error of the server");
 });
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(chalk.yellow("server is listening to port " + PORT));
     connectToDb();
 });
+
+const io = socketIo(server);
+io.use(ioAuth);
+
+io.on("connection", socketConnection);
+
