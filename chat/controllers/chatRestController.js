@@ -1,15 +1,15 @@
 const express = require('express');
 const Chat = require('../models/Chat');
 const ioAuth = require('../../auth/socketAuthService');
+const auth = require('../../auth/authService');
 
 const router = express.Router();
 // Get chat by ID
-router.get('/:chatId', ioAuth, async (req, res) => {
-    const { chatId } = req.params;
-    const userInfo = req.user;
-    const userId = userInfo._id;
-
+router.get('/:chatId', auth, async (req, res) => {
     try {
+        const { chatId } = req.params;
+        const userInfo = req.user;
+        const userId = userInfo._id;
         const chat = await Chat.findById(chatId).populate('messages.sender', 'username');
         if (!chat) {
             return res.status(404).json({ message: 'Chat not found' });

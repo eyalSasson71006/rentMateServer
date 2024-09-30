@@ -6,7 +6,6 @@ const { corsMiddleware, socketCorsMiddleware } = require("./middlewares/cors");
 const chalk = require("chalk");
 const loggerMiddleware = require("./logger/loggerService");
 const ioAuth = require("./auth/socketAuthService");
-const Chat = require("./chat/models/Chat");
 const socketConnection = require("./chat/services/chatConnection");
 const socketIo = require('socket.io');
 const http = require('http');
@@ -38,5 +37,4 @@ const io = socketIo(server, socketCorsMiddleware);
 
 io.use(ioAuth);
 
-io.on("connection", socketConnection);
-
+io.on("connection", (socket) => socketConnection(socket, io));

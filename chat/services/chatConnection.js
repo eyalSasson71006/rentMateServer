@@ -1,6 +1,6 @@
 const Chat = require("../models/Chat");
 
-const socketConnection = (socket) => {
+const socketConnection = (socket, io) => {
     console.log(`User connected: ${socket.user._id}`);
 
     // Join all chat rooms the user is part of
@@ -10,8 +10,10 @@ const socketConnection = (socket) => {
             chats.forEach((chat) => {
                 socket.join(chat._id.toString());
             });
+            socket.emit('chatsList', chats);
         })
         .catch((err) => console.error(err));
+
 
     // Handle sending messages
     socket.on('sendMessage', async ({ chatId, content }) => {
@@ -50,7 +52,7 @@ const socketConnection = (socket) => {
             let chat = await Chat.findOne({
                 participants: { $all: [socket.user._id, recipientId] },
             });
-
+            
             if (!chat) {
                 chat = new Chat({
                     participants: [socket.user._id, recipientId],

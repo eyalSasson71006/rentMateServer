@@ -7,21 +7,20 @@ const tokenGenerator = config.get("TOKEN_GENERATOR");
 const ioAuth = (socket, next) => {
     if (tokenGenerator === "jwt") {
         try {
-            const tokenFromClient = socket.handshake.query.token;
+            const tokenFromClient = socket.handshake.query.token;            
             if (!tokenFromClient) {
                 const error = new Error("Please Login");
-                return next(createError("Authentication", error, 401));
+                return createError("Authentication", error, 401);
             }
             const userInfo = verifyToken(tokenFromClient);
             if (!userInfo) {
                 const error = new Error("Unauthorize user");
-                return next(createError("Authentication", error, 401));
+                return createError("Authentication", error, 401);
             }
-            socket.user = userInfo;
+            socket.user = userInfo;                                    
             return next();
         } catch (error) {
-            return handleError(res, 401, error.message);
-
+            return new Error('Authentication error' + error.message);
         }
     }
 
