@@ -27,6 +27,7 @@ const socketConnection = (socket, io) => {
             const message = {
                 sender: socket.user._id,
                 content,
+                timestamp: new Date(),
             };
             chat.messages.push(message);
             await chat.save();
@@ -34,11 +35,7 @@ const socketConnection = (socket, io) => {
             // Emit the message to all participants in the chat room
             io.to(chatId).emit('receiveMessage', {
                 chatId,
-                message: {
-                    sender: socket.user._id,
-                    content,
-                    timestamp: message.timestamp,
-                },
+                message
             });
         } catch (err) {
             console.error(err);
@@ -52,7 +49,7 @@ const socketConnection = (socket, io) => {
             let chat = await Chat.findOne({
                 participants: { $all: [socket.user._id, recipientId] },
             });
-            
+
             if (!chat) {
                 chat = new Chat({
                     participants: [socket.user._id, recipientId],
@@ -67,9 +64,6 @@ const socketConnection = (socket, io) => {
 
             // Join the chat room
             socket.join(chat._id.toString());
-
-            // Optionally, emit the chat details to the user
-            socket.emit('chatCreated', { chatId: chat._id });
         } catch (err) {
             console.error(err);
         }

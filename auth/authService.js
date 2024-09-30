@@ -7,7 +7,7 @@ const tokenGenerator = config.get("TOKEN_GENERATOR");
 const auth = (req, res, next) => {
     if (tokenGenerator === "jwt") {
         try {
-            const tokenFromClient = req.header("x-auth-token");
+            const tokenFromClient = req.header("x-auth-token");            
             if (!tokenFromClient) {
                 const error = new Error("Please Login");
                 return createError("Authentication", error, 401);
