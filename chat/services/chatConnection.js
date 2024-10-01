@@ -56,12 +56,9 @@ const socketConnection = (socket, io) => {
                     messages: [],
                 });
                 await chat.save();
-
-                // Join the new chat room for both users if they are connected
-                io.to(socket.user._id).emit('newChat', { chatId: chat._id });
-                io.to(recipientId).emit('newChat', { chatId: chat._id });
             }
-
+            
+            socket.emit('enterChat', { chatId: chat._id });
             // Join the chat room
             socket.join(chat._id.toString());
         } catch (err) {
