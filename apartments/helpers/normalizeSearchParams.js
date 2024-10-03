@@ -29,8 +29,8 @@ const normalizeSearchParams = (params) => {
 
     let amenities = {};
     for (let key in params) {
-        
-        if (amenitiesList.includes(key) && params[key]=="true") {
+
+        if (amenitiesList.includes(key) && params[key] == "true") {
             amenities[`amenities.${key}`] = Boolean(params[key]);
         }
     }
@@ -55,10 +55,18 @@ const normalizeSearchParams = (params) => {
         if (minPrice) query.price.$gte = minPrice;
         if (maxPrice) query.price.$lte = maxPrice;
     }
-    if (bedrooms) query.bedrooms = bedrooms;
-    if (bathrooms) query.bathrooms = bathrooms;
+    if (bedrooms) {
+        query.bedrooms = {};
+        query.bedrooms.$gte = bedrooms;
+    }
+    if (bathrooms) {
+        query.bathrooms = {};
+        query.bathrooms.$gte = bathrooms;
+    }
     if (guests) query.guests = guests;
-    if (params.propertyType) query.propertyType = params.propertyType;
+    if (params.propertyType && params.propertyType != "Any") query.propertyType = params.propertyType;
+    console.log(query);
+
     return query;
 };
 
