@@ -65,9 +65,13 @@ const normalizeSearchParams = (params) => {
     }
     if (guests) query.guests = guests;
     if (params.propertyType && params.propertyType != "Any") query.propertyType = params.propertyType;
-    console.log(query);
 
-    return query;
+    let sort = {};
+    if (params.sort && params.sort != "Any") sort = params.sort;
+    let order = {};
+    if (params.order && params.order != "") order = params.order;
+    
+    return { find: query, sort: sort, order: order };
 };
 
 module.exports = normalizeSearchParams;
