@@ -16,6 +16,10 @@ const messageSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
+    isRead: {
+        type: Boolean,
+        default: false
+    }
 });
 
 const chatSchema = new mongoose.Schema({
@@ -27,6 +31,10 @@ const chatSchema = new mongoose.Schema({
         },
     ],
     messages: [messageSchema],
+    lastSeen: [{
+        userId: { type: mongoose.Schema.Types.ObjectId, ref: 'user' },
+        lastSeenAt: { type: Date, default: null }
+    }]
 });
 
 const Chat = mongoose.model('Chat', chatSchema);

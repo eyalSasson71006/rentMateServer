@@ -7,9 +7,9 @@ const router = express.Router();
 router.get('/my-chats', auth, async (req, res) => {
     try {
         const userInfo = req.user;
-        const userId = userInfo._id;        
-        const chats = await Chat.find({ participants: userId })
-        
+        const userId = userInfo._id;
+        const chats = await Chat.find({ participants: userId });
+
         if (!chats) {
             return res.status(404).json({ message: 'Chats not found' });
         }
@@ -24,8 +24,8 @@ router.get('/:chatId', auth, async (req, res) => {
     try {
         const { chatId } = req.params;
         const userInfo = req.user;
-        const userId = userInfo._id;                
-        const chat = await Chat.findById(chatId).populate('messages.sender', 'username');
+        const userId = userInfo._id;
+        const chat = await Chat.findById(chatId).populate('messages.sender', 'name.first name.last');        
         if (!chat) {
             return res.status(404).json({ message: 'Chat not found' });
         }
