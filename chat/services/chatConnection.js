@@ -1,10 +1,10 @@
 const Chat = require("../models/Chat");
+const userSocketMap = require("../models/userSocketMap");
 
 const socketConnection = (socket, io) => {
     console.log(`User connected: ${socket.user._id}`);
 
-    // Join all chat rooms the user is part of
-    // Fetch chats from the database where user is a participant
+    userSocketMap[socket.user._id] = socket.id;
     Chat.find({ participants: socket.user._id })
         .then((chats) => {
             chats.forEach((chat) => {
@@ -16,13 +16,11 @@ const socketConnection = (socket, io) => {
         .catch((err) => console.error(err));
 
 
-    // Handle sending messages
     socket.on('sendMessage', async ({ chatId, content }) => {
         try {
             const chat = await Chat.findById(chatId);
             if (!chat) return;
 
-            // Verify that the sender is part of the chat
             if (!chat.participants.includes(socket.user._id)) return;
 
             const message = {
@@ -33,7 +31,6 @@ const socketConnection = (socket, io) => {
             chat.messages.push(message);
             await chat.save();
 
-            // Emit the message to all participants in the chat room
             io.to(chatId).emit('receiveMessage', {
                 chatId,
                 message
@@ -43,10 +40,8 @@ const socketConnection = (socket, io) => {
         }
     });
 
-    // Handle creating a new chat
     socket.on('createChat', async ({ recipientId }) => {
         try {
-            // Check if a chat already exists between the two users
             let chat = await Chat.findOne({
                 participants: { $all: [socket.user._id, recipientId] },
             });
@@ -60,19 +55,32 @@ const socketConnection = (socket, io) => {
             }
 
             socket.emit('enterChat', { chatId: chat._id });
-            // Join the chat room
             socket.join(chat._id.toString());
+
+            const recipientSocketId = userSocketMap[recipientId];
+            if (recipientSocketId) {
+                const recipientSocket = io.sockets.sockets.get(recipientSocketId);
+                if (recipientSocket) {
+                    recipientSocket.join(chat._id.toString());
+                }
+            }
+
         } catch (err) {
             console.error(err);
         }
     });
 
-    socket.on('selectChat', async (chatId) => {
+    socket.on('markMessagesAsRead', async (chatId) => {
         try {
             const chat = await Chat.findById(chatId);
             if (!chat) return;
 
-            // Update the user's lastSeen timestamp in the chat
+            chat.messages.forEach((message) => {
+                if (message.sender.toString() !== socket.user._id.toString() && !message.isRead) {
+                    message.isRead = true;
+                }
+            });
+
             const userId = socket.user._id;
             const userLastSeen = chat.lastSeen.find(
                 (seen) => seen.userId.toString() === userId.toString()
@@ -115,23 +123,6 @@ const socketConnection = (socket, io) => {
         }
     });
 
-    socket.on('markMessagesAsRead', async (chatId) => {
-        try {
-            const chat = await Chat.findById(chatId);
-            if (!chat) return;
-
-            // Mark all unread messages from other users as read
-            chat.messages.forEach((message) => {
-                if (message.sender.toString() !== socket.user._id.toString() && !message.isRead) {
-                    message.isRead = true;
-                }
-            });
-
-            await chat.save();
-        } catch (err) {
-            console.error(err);
-        }
-    });
 
     socket.on('disconnect', () => {
         console.log(`User disconnected: ${socket.user._id}`);
