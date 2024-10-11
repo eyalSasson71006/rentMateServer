@@ -19,7 +19,7 @@ router.get('/:chatId', auth, async (req, res) => {
             return res.status(403).json({ message: 'Access denied' });
         }
 
-        res.json({ messages: chat.messages });
+        res.json({ messages: chat.messages, participants: chat.participants });
     } catch (err) {
         res.status(500).json({ message: 'Server error' });
     }
