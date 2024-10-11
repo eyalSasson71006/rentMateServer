@@ -1,9 +1,9 @@
 const express = require("express");
-const { registerUser, getUsers, getUserById, loginUser, updateUser, deleteUser } = require("../models/usersAccessDataService");
+const { registerUser, getUsers, getUserById, loginUser, updateUser, deleteUser, toggleIsOwner } = require("../models/usersAccessDataService");
 const auth = require("../../auth/authService");
 const { handleError } = require("../../utils/handleErrors");
 const normalizeUser = require("../helpers/normalizeUser");
-const { getUsersApartments, deleteUsersApartments } = require("../../apartments/models/apartmentAccessDataService");
+const { getUsersApartments, deleteUsersApartments, toggleUsersApartmentsUnavailable } = require("../../apartments/models/apartmentAccessDataService");
 const calculateRating = require("../helpers/calculateRating");
 const { validateRegistration, validateLogin, validateEditUser } = require("../validation/userValidationService");
 
@@ -41,7 +41,7 @@ router.get("/users-reviews/:id", async (req, res) => {
         const { id } = req.params;
         let apartments = await getUsersApartments(id);
         if (apartments.length > 0) {
-            const { reviews, rating } = calculateRating(apartments);            
+            const { reviews, rating } = calculateRating(apartments);
             await updateUser(id, { rating: rating });
             res.send(reviews);
         }
@@ -117,6 +117,21 @@ router.delete("/:id", auth, async (req, res) => {
         }
         const user = await deleteUser(id);
         await deleteUsersApartments(id);
+        res.send(user);
+    } catch (error) {
+        handleError(res, error.status || 400, error.message);
+    }
+});
+
+router.patch("/:id", auth, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const userInfo = req.user;
+        if (userInfo._id != id && !userInfo.isAdmin) {
+            return handleError(res, 403, "Authorization Error: Only the user itself or an admin can edit it's owner status");
+        }
+        const user = await toggleIsOwner(id);
+        await toggleUsersApartmentsUnavailable(id);
         res.send(user);
     } catch (error) {
         handleError(res, error.status || 400, error.message);

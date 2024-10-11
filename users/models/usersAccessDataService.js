@@ -93,4 +93,20 @@ const deleteUser = async (userId) => {
     return createError("DB", error, 500);
 };
 
-module.exports = { registerUser, getUsers, getUserById, loginUser, updateUser, deleteUser };
+const toggleIsOwner = async (userId) => {
+    if (DB === "mongodb") {
+        try {
+            let user = await User.findById(userId);
+            user.isOwner = !user.isOwner;
+            await user.save();
+            return user;
+        } catch (error) {
+            createError("Mongoose ", error);
+        }
+    }
+
+    const error = new Error("There is no other db for this requests");
+    return createError("DB", error, 500);
+};
+
+module.exports = { registerUser, getUsers, getUserById, loginUser, updateUser, deleteUser, toggleIsOwner };
