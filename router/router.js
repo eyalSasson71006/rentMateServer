@@ -3,11 +3,13 @@ const apartmentsRouterController = require("../apartments/routes/apartmentRestCo
 const usersRouterController = require("../users/routes/usersRestController");
 const chatsRouterController = require("../chat/controllers/chatRestController.js");
 const { handleError } = require("../utils/handleErrors.js");
+const limiterMiddleware = require("../middlewares/rateLimit");
+
 
 const router = express.Router();
 
-router.use("/apartments", apartmentsRouterController);
-router.use("/users", usersRouterController);
+router.use("/apartments", limiterMiddleware, apartmentsRouterController);
+router.use("/users", limiterMiddleware, usersRouterController);
 router.use("/chat", chatsRouterController);
 
 router.use((req, res) => {
