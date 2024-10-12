@@ -6,20 +6,20 @@ const normalizeUser = require("../helpers/normalizeUser");
 const { getUsersApartments, deleteUsersApartments, toggleUsersApartmentsUnavailable } = require("../../apartments/models/apartmentAccessDataService");
 const calculateRating = require("../helpers/calculateRating");
 const { validateRegistration, validateLogin, validateEditUser } = require("../validation/userValidationService");
+const { deleteUserChats } = require("../../chat/models/chatAccessDataService");
 
 const router = express.Router();
 
 router.get("/", auth, async (req, res) => {
     try {
-        // // only admin can - currently disabled for development
-        // const userInfo = req.user;
-        // if (!userInfo.isAdmin) {
-        //     return res
-        //         .status(403)
-        //         .send(
-        //             "Authorization Error: Only an admin can get all users details"
-        //         );
-        // }
+        const userInfo = req.user;
+        if (!userInfo.isAdmin) {
+            return res
+                .status(403)
+                .send(
+                    "Authorization Error: Only an admin can get all users details"
+                );
+        }
         const users = await getUsers();
         res.send(users);
     } catch (error) {
@@ -117,6 +117,7 @@ router.delete("/:id", auth, async (req, res) => {
         }
         const user = await deleteUser(id);
         await deleteUsersApartments(id);
+        await deleteUserChats(id);
         res.send(user);
     } catch (error) {
         handleError(res, error.status || 400, error.message);

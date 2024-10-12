@@ -14,7 +14,6 @@ router.get('/:chatId', auth, async (req, res) => {
             return res.status(404).json({ message: 'Chat not found' });
         }
 
-        // Check if the user is a participant
         if (!chat.participants.includes(userId)) {
             return res.status(403).json({ message: 'Access denied' });
         }
