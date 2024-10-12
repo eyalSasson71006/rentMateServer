@@ -1,11 +1,11 @@
-const Chat = require("../models/Chat");
+const { getUserChats, getChatById, createChat } = require("../models/chatAccessDataService");
 const userSocketMap = require("../models/userSocketMap");
 
 const socketConnection = (socket, io) => {
     console.log(`User connected: ${socket.user._id}`);
 
     userSocketMap[socket.user._id] = socket.id;
-    Chat.find({ participants: socket.user._id })
+    getUserChats(socket.user._id)
         .then((chats) => {
             chats.forEach((chat) => {
                 socket.join(chat._id.toString());
@@ -18,7 +18,7 @@ const socketConnection = (socket, io) => {
 
     socket.on('sendMessage', async ({ chatId, content }) => {
         try {
-            const chat = await Chat.findById(chatId);
+            const chat = await getChatById(chatId);
             if (!chat) return;
 
             if (!chat.participants.includes(socket.user._id)) return;
@@ -42,17 +42,7 @@ const socketConnection = (socket, io) => {
 
     socket.on('createChat', async ({ recipientId }) => {
         try {
-            let chat = await Chat.findOne({
-                participants: { $all: [socket.user._id, recipientId] },
-            });
-
-            if (!chat) {
-                chat = new Chat({
-                    participants: [socket.user._id, recipientId],
-                    messages: [],
-                });
-                await chat.save();
-            }
+            let chat = await createChat(socket.user._id, recipientId);
 
             socket.emit('enterChat', { chatId: chat._id });
             socket.join(chat._id.toString());
@@ -72,7 +62,7 @@ const socketConnection = (socket, io) => {
 
     socket.on('markMessagesAsRead', async (chatId) => {
         try {
-            const chat = await Chat.findById(chatId);
+            const chat = await getChatById(chatId);
             if (!chat) return;
 
             chat.messages.forEach((message) => {
@@ -99,7 +89,7 @@ const socketConnection = (socket, io) => {
     socket.on('getChatsWithUnreadCount', async () => {
         try {
             const userId = socket.user._id;
-            const chats = await Chat.find({ participants: userId });
+            const chats = await getUserChats(userId);
 
             const chatsWithUnreadCount = chats.map((chat) => {
                 const userLastSeen = chat.lastSeen.find(
