@@ -92,7 +92,7 @@ router.put("/:id", auth, async (req, res) => {
         if (userInfo._id != fullApartmentFromDb.owner && !userInfo.isAdmin) {
             return handleError(res, 403, "Authorization Error: Only the user who created the apartment or admin can update its details");
         }
-        let apartment = await normalizeApartment(newApartment, userInfo._id);
+        let apartment = await normalizeApartment(newApartment);
         apartment = await updateApartment(id, apartment);
         res.send(apartment);
     } catch (error) {
