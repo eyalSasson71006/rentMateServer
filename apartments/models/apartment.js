@@ -43,10 +43,6 @@ const apartmentSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
-    favorite: {
-        type: Boolean,
-        default: false
-    },
     available: {
         type: Boolean,
         required: true,
