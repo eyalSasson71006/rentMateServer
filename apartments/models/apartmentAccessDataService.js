@@ -35,6 +35,7 @@ const getApartmentById = async (id) => {
     if (DB === "mongodb") {
         try {
             let apartment = await Apartment.findById(id);
+            if (apartment.reviews.length > 0) apartment = await apartment.populate("reviews.userId", "name image");
             return apartment;
         } catch (error) {
             createError("Mongoose ", error);
@@ -47,7 +48,7 @@ const getApartmentById = async (id) => {
 const getUsersApartments = async (userId) => {
     if (DB === "mongodb") {
         try {
-            let apartments = await Apartment.find({ owner: userId });
+            let apartments = await Apartment.find({ owner: userId }).populate("reviews.userId", "name image");
             return apartments;
         } catch (error) {
             createError("Mongoose ", error);
@@ -103,6 +104,7 @@ const reviewApartment = async (apartmentId, reviewObj) => {
             }
             apartment.reviews.push(reviewObj);
             await apartment.save();
+            if (apartment.reviews.length > 0) apartment = await apartment.populate("reviews.userId", "name image");
             return apartment;
         } catch (error) {
             createError("Mongoose ", error);
@@ -128,7 +130,7 @@ const deleteApartment = async (apartmentId) => {
 const deleteUsersApartments = async (userId) => {
     if (DB === "mongodb") {
         try {
-            let apartments = await Apartment.deleteMany({owner: userId});
+            let apartments = await Apartment.deleteMany({ owner: userId });
             return apartments;
         } catch (error) {
             createError("Mongoose ", error);
@@ -141,11 +143,11 @@ const deleteUsersApartments = async (userId) => {
 const toggleUsersApartmentsUnavailable = async (userId) => {
     if (DB === "mongodb") {
         try {
-            let apartments = await Apartment.find({owner: userId});
+            let apartments = await Apartment.find({ owner: userId });
             apartments.forEach(apartment => {
                 apartment.available = false;
                 apartment.save();
-            })
+            });
             return apartments;
         } catch (error) {
             createError("Mongoose ", error);
