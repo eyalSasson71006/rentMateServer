@@ -45,6 +45,7 @@ const getUserById = async (userId) => {
     if (DB === "mongodb") {
         try {
             let user = await User.findById(userId);
+            user = _.pick(user, ["_id", "name", "email", "phone", "image", "address", "rating", "isOwner", "isAdmin"]);
             return user;
         } catch (error) {
             createError("Mongoose ", error);
@@ -57,8 +58,9 @@ const getUserById = async (userId) => {
 const getUsers = async () => {
     if (DB === "mongodb") {
         try {
-            let user = await User.find();
-            return user;
+            let users = await User.find();
+            users = users.map(user => _.pick(user, ["_id", "name", "email", "phone", "image", "isOwner", "isAdmin"]));
+            return users;
         } catch (error) {
             createError("Mongoose ", error);
         }
@@ -71,6 +73,7 @@ const updateUser = async (userId, updatedUser) => {
     if (DB === "mongodb") {
         try {
             let user = await User.findByIdAndUpdate(userId, updatedUser, { new: true });
+            user = _.pick(user, ["_id", "name", "email", "phone", "image", "address", "rating", "isOwner", "isAdmin"]);
             return user;
         } catch (error) {
             createError("Mongoose ", error);
@@ -84,6 +87,7 @@ const deleteUser = async (userId) => {
     if (DB === "mongodb") {
         try {
             let user = await User.findByIdAndDelete(userId);
+            user = _.pick(user, ["_id", "name", "email", "phone", "image", "address", "rating", "isOwner", "isAdmin"]);
             return user;
         } catch (error) {
             createError("Mongoose ", error);
@@ -99,6 +103,7 @@ const toggleIsOwner = async (userId) => {
             let user = await User.findById(userId);
             user.isOwner = !user.isOwner;
             await user.save();
+            user = _.pick(user, ["_id", "name", "email", "phone", "image", "address", "rating", "isOwner", "isAdmin"]);
             return user;
         } catch (error) {
             createError("Mongoose ", error);
