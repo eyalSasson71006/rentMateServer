@@ -17,7 +17,10 @@ const registerUser = async (newUser) => {
             user = _.pick(user, ["email", "name", "_id"]);
             return (user);
         } catch (error) {
-            createError("Mongoose ", error);
+            if (error.code === 11000 && error.keyPattern.email){
+                error = new Error("Email is already in use, please use another email.");
+            }
+            createError("", error);
         }
     }
     const error = new Error("There is no other db for this requests");
