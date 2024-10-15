@@ -1,5 +1,6 @@
 const config = require("config");
 const Chat = require("./Chat");
+const { createError } = require("../../utils/handleErrors");
 
 const DB = config.get("DB");
 
