@@ -45,9 +45,9 @@ const normalizeSearchParams = (params) => {
     };
     if (params.location) {
         query.$or = [
-            { 'address.state': params.location },
-            { 'address.city': params.location },
-            { 'address.country': params.location }
+            { 'address.state': params.location.toLowerCase() },
+            { 'address.city': params.location.toLowerCase() },
+            { 'address.country': params.location.toLowerCase() }
         ];
     }
     if (minPrice || maxPrice) {
@@ -70,6 +70,7 @@ const normalizeSearchParams = (params) => {
     if (params.sort && params.sort != "Any") sort = params.sort;
     let order = {};
     if (params.order && params.order != "") order = params.order;
+    console.log(query);
     
     return { find: query, sort: sort, order: order };
 };
