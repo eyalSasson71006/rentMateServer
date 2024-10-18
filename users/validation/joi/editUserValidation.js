@@ -5,7 +5,7 @@ const editUserValidation = (user) => {
         name: Joi.object()
             .keys({
                 first: Joi.string().min(2).max(256).required(),
-                middle: Joi.string().min(2).max(256).allow(""),
+                middle: Joi.string().max(256).allow(""),
                 last: Joi.string().min(2).max(256).required(),
             })
             .required(),

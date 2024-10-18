@@ -5,7 +5,7 @@ const registerValidation = (user) => {
         name: Joi.object()
             .keys({
                 first: Joi.string().min(2).max(256).required(),
-                middle: Joi.string().min(2).max(256).allow(""),
+                middle: Joi.string().max(256).allow(""),
                 last: Joi.string().min(2).max(256).required(),
             })
             .required(),
@@ -47,7 +47,7 @@ const registerValidation = (user) => {
                 city: Joi.string().min(2).max(256).required(),
                 street: Joi.string().min(2).max(256).required(),
                 houseNumber: Joi.number().required(),
-                zip: Joi.number().min(0),
+                zip: Joi.number(),
             })
             .required(),
         isOwner: Joi.boolean().required(),

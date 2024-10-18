@@ -41,20 +41,6 @@ router.get("/", async (req, res) => {
     }
 });
 
-router.get("/apartment-reviews/:id", async (req, res) => {
-    try {
-        const { id } = req.params;
-        let apartment = await getApartmentById(id);
-        if (apartment?.reviews.length > 0) {
-            const { reviews, rating } = calculateRating([apartment]);
-            await updateApartment(id, { rating: rating });
-            res.send(reviews);
-        }
-    } catch (error) {
-        handleError(res, 400, error.message);
-    }
-});
-
 router.patch("/review/:id", auth, async (req, res) => {
     try {
         const newReview = req.body;
@@ -92,6 +78,10 @@ router.put("/:id", auth, async (req, res) => {
         if (userInfo._id != fullApartmentFromDb.owner && !userInfo.isAdmin) {
             return handleError(res, 403, "Authorization Error: Only the user who created the apartment or admin can update its details");
         }
+        const error = validateApartment(newApartment);
+        if (error) {
+            return handleError(res, 400, "Validation error: " + error);
+        };
         let apartment = await normalizeApartment(newApartment);
         apartment = await updateApartment(id, apartment);
         res.send(apartment);
